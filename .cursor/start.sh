@@ -28,7 +28,11 @@ wait_for redis 127.0.0.1 6379
 
 echo "==> Starting MariaDB"
 if ! mysqladmin --protocol=tcp -h 127.0.0.1 -uroot ping >/dev/null 2>&1; then
-  sudo mkdir -p /var/run/mysqld && sudo chown mysql:mysql /var/run/mysqld
+  # mariadbd binds its unix socket at /run/mysqld/mysqld.sock. Create both
+  # /run/mysqld and /var/run/mysqld so it works whether or not /var/run is a
+  # symlink to /run on the host image.
+  sudo mkdir -p /run/mysqld /var/run/mysqld
+  sudo chown mysql:mysql /run/mysqld /var/run/mysqld 2>/dev/null || true
   sudo mariadbd --user=mysql --datadir=/var/lib/mysql >/tmp/mariadb.log 2>&1 &
 fi
 wait_for mariadb 127.0.0.1 3306

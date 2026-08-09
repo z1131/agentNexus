@@ -60,8 +60,8 @@ if [ ! -x "$NACOS_HOME/bin/startup.sh" ]; then
 fi
 
 echo "==> [6/6] Initializing MariaDB data directory"
-sudo mkdir -p /var/run/mysqld
-sudo chown mysql:mysql /var/run/mysqld
+sudo mkdir -p /run/mysqld /var/run/mysqld
+sudo chown mysql:mysql /run/mysqld /var/run/mysqld 2>/dev/null || true
 if [ ! -d /var/lib/mysql/mysql ]; then
   sudo mariadb-install-db --user=mysql --datadir=/var/lib/mysql >/dev/null
 fi
